@@ -68,6 +68,8 @@ int main(void)
 
     SDL_UpdateWindowSurface(window);
 
+    // Event polling is required on Wayland to keep the surface mapped.
+    // on X11 the window may still appear without it, but polling is still recommended.
     Uint32 start = SDL_GetTicks();
     while (SDL_GetTicks() - start < 2000) {
         SDL_Event e;
