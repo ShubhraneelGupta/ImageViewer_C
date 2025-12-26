@@ -1,6 +1,9 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 
+#define WIDTH 900
+#define HEIGHT 600
+
 int main(void)
 {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -12,9 +15,9 @@ int main(void)
         "Test Window",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
-        800,
-        600,
-        SDL_WINDOW_MOUSE_GRABBED
+        WIDTH,
+        HEIGHT,
+        0
     );
     if (!window) {
         fprintf(stderr, "CreateWindow failed: %s\n", SDL_GetError());
@@ -60,12 +63,24 @@ int main(void)
 
 
 //CPU WORKFLOW
-    SDL_FillRect(
-        surface,
-        NULL,
-        0xFFFFFF
-    );
-
+    Uint8 r, g, b;
+    SDL_Rect pixel = (SDL_Rect){
+            0, 0,
+            1, 1
+    };
+    for(int x = 0; x < WIDTH; x++)
+    {
+        for(int y = 0; y < HEIGHT; y++)
+        {
+            Uint32 color = SDL_MapRGB(surface->format, (x+y)%255, (x*y)%255, (x*x)%255);
+            pixel.x = x; pixel.y = y;
+            SDL_FillRect(
+                surface,
+                &pixel,
+                color
+            );
+        }
+    }
     SDL_UpdateWindowSurface(window);
 
     // Event polling is required on Wayland to keep the surface mapped.
